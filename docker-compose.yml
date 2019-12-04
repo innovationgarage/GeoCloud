@@ -1,0 +1,104 @@
+version: "3"
+services:
+  nmea:
+    image: innovationgarage/geocloud_nmea:latest
+    environment:
+      CONFIG: |
+        {
+            "connections": [
+                {"handler": "source", "type": "listen", "address": "tcp:1024"},
+                {"handler": "source", "type": "connect", "address": "tcp:153.44.253.27:5631"},
+                {"handler": "destination", "type": "listen", "address": "tcp:1025"}
+            ]
+        }    
+    networks:
+      - geocloud
+    ports:
+      - "6024:1024"
+
+  gribannotator:
+    image: innovationgarage/gributils-annotator
+    environment:
+      CONFIG: |
+        {
+            "index": "http://gribindexer:1028",
+            "connections": [
+                {"handler": "source", "type": "connect", "address": "tcp:nmea:1025"},
+                {"handler": "destination", "type": "listen", "address": "tcp:1025"}
+            ]
+        }
+    networks:
+      - geocloud
+
+  essink:
+    image: innovationgarage/geocloud_es:latest
+    environment:
+      CONFIG: |
+        {
+            "es_host" : "elasticsearch:9200",
+            "connections": [
+                {"handler": "source", "type": "connect", "address": "tcp:gribannotator:1025"}
+            ],
+            "vessels_index": "",
+            "vessels_mapping": {
+                "mappings" : {
+                    "properties" : {
+                        "mmsi": {
+                            "type": "text"
+                        }
+                    }
+                }
+            },    
+            "positions_index": "",
+            "positions_mapping": {
+                "mappings" : {
+                    "properties" : {
+                        "location": {
+                            "type": "geo_shape"
+                        },
+                        "mmsi": {
+                            "type": "text"
+                        }
+                    }
+                }
+            }            
+        }
+    networks:
+      - geocloud
+
+  gribindexer:
+    image: innovationgarage/gributils
+    networks:
+      - geocloud
+    environment:
+      ESURL: "http://elasticsearch:9200"
+    volumes:
+      - gribdata:/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:6.2.4
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+      - xpack.security.enabled=false
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - cluster.routing.allocation.disk.watermark.low=1024Mb
+      - cluster.routing.allocation.disk.watermark.high=512Mb
+      - cluster.routing.allocation.disk.watermark.flood_stage=512Mb
+    networks:
+      - geocloud
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+
+networks:
+  geocloud:
+    driver: bridge
+
+volumes:
+  gribdata:
+    driver: local
+  esdata:
+    driver: local
