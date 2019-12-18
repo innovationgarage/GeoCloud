@@ -42,9 +42,11 @@ services:
             "vessels_index": "",
             "vessels_mapping": {
                 "mappings" : {
-                    "properties" : {
-                        "mmsi": {
-                            "type": "text"
+                    "_doc": {
+                        "properties" : {
+                            "mmsi": {
+                                "type": "text"
+                            }
                         }
                     }
                 }
@@ -52,12 +54,14 @@ services:
             "positions_index": "",
             "positions_mapping": {
                 "mappings" : {
-                    "properties" : {
-                        "location": {
-                            "type": "geo_shape"
-                        },
-                        "mmsi": {
-                            "type": "text"
+                    "_doc": {
+                        "properties" : {
+                            "location": {
+                                "type": "geo_shape"
+                            },
+                            "mmsi": {
+                                "type": "text"
+                            }
                         }
                     }
                 }
