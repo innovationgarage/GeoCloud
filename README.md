@@ -5,7 +5,7 @@ Pipeline components:
 
   * [NMEA input service](https://github.com/innovationgarage/GeoCloud-nmea)
   * Annotator services
-    * [Weather annotation](https://github.com/innovationgarage/GeoCloud-grib) using [gributils](https://github.com/innovationgarage/gributils-annotator)
+    * [Weather annotation](https://github.com/innovationgarage/GeoCloud-grib) using [gributils-annotator](https://github.com/innovationgarage/gributils-annotator) connecting to the [gributils-indexer](https://github.com/innovationgarage/gributils) GRIB file repository.
   * [Elastic search inserter](https://github.com/innovationgarage/GeoCloud-es)
  
 # Running
