@@ -78,6 +78,8 @@ services:
       ESURL: "http://elasticsearch:9200"
     volumes:
       - gribdata:/data
+    ports:
+      - "6028:1028"
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-platinum:6.2.4
