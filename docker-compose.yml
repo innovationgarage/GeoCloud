@@ -7,7 +7,6 @@ services:
         {
             "connections": [
                 {"handler": "source", "type": "listen", "address": "tcp:1024"},
-                {"handler": "source", "type": "connect", "address": "tcp:153.44.253.27:5631"},
                 {"handler": "destination", "type": "listen", "address": "tcp:1025"}
             ]
         }    
@@ -17,7 +16,7 @@ services:
       - "6024:1024"
 
   gribannotator:
-    image: innovationgarage/gributils-annotator
+    image: innovationgarage/gributils-annotator:0.11
     environment:
       CONFIG: |
         {
@@ -71,7 +70,7 @@ services:
       - geocloud
 
   gribindexer:
-    image: innovationgarage/gributils
+    image: innovationgarage/gributils:0.11.0
     networks:
       - geocloud
     environment:
