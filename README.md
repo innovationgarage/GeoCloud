@@ -21,3 +21,10 @@ Pipeline components:
   * [GeoJSON](https://geojson.org/) point with properties containing GPSD JSON
     * Encoded in ES as GeoPoint
     
+# Running
+
+    docker-compose up
+
+* This will listen for messages from TinyTracker on port 6024. The TinyTracker protocol is pure NMEA (with tagblocks) over a TCP stream.
+* ElasticSearch is available on port 9200 to query tracks. 
+* The [GRIB indexer](https://github.com/innovationgarage/gributils) is available on port 6028. This is a HTTP REST protocol, see the gributils documentation for more details.
